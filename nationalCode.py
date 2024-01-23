@@ -1,17 +1,39 @@
-def check_national_code(national_code:str):
-    if len(national_code) == 10:
-        if national_code == '1111111111' or national_code == '0000000000' or national_code == '2222222222' or national_code == '3333333333' or national_code == '4444444444' or national_code == '5555555555' or national_code == '6666666666' or national_code == '7777777777' or national_code == '8888888888' or national_code == '9999999999':
-            return False
+from random import randint
 
-        c =  int(national_code[9])
-        n =  int(national_code[0]) * 10 + int(national_code[1]) * 9 + int(national_code[2]) * 8 + int(national_code[3]) * 7 + int(national_code[4]) * 6 + int(national_code[5]) * 5 + int(national_code[6]) * 4 + int(national_code[7]) * 3 + int(national_code[8]) * 2
-        r = n -  int(n / 11) * 11
-        if (r == 0 and r == c) or (r == 1 and c == 1) or (r > 1 and c == 11 - r):
-            return True
-        else:
-            return False
-    else:
+
+def check_national_code(ncode: str):
+    if len(ncode != 10):
         return False
+    if ncode in [10 * str(i) for i in range(10)]:
+        return False
+
+    sum = 0
+
+    for i, l in enumerate(ncode[:-1]):
+        sum += (10 - i) * int(l)
+
+    if ((sum % 11 < 2) and (int(ncode[-1]) == (sum % 11))) or (
+        (sum % 11 >= 2) and (int(ncode[-1]) == (11 - (sum % 11)))
+    ):
+        return True
+    return False
+
+
+def generate_national_code(rond=False):
+    ncode = []
+    sum = 0
+    for i in range(10, 1, -1):
+        j = randint(0, 9) if not rond else randint(0, 1)
+        sum += i * (j)
+        ncode.append(str(j))
+
+    if sum % 11 < 2:
+        ncode.append(str(sum % 11))
+    else:
+        ncode.append(str(11 - (sum % 11)))
+
+    return "".join(ncode)
+
 
 def get_city(national_code:str):
     data = {
